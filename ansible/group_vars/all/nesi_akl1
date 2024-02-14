@@ -1,0 +1,59 @@
+---
+###############################################################################
+# Configuration of OpenStack user environment for NeSI OpenStack akl-1 region.
+
+# Path to create virtualenv in which to install python dependencies.
+nesi_akl1_venv: "{{ ansible_env.PWD }}/nesi_akl1-config-venv"
+
+# List of OpenStack projects. Format is as required by the stackhpc.os-projects
+# role.
+nesi_akl1_projects: []
+
+###############################################################################
+# Configuration of networks, subnets and routers for NeSI OpenStack akl-1 region.
+
+# List of networks in the nesi_akl1 project. Format is as required by the
+# stackhpc.os-networks role.
+nesi_akl1_networks: []
+
+# List of routers in the nesi_akl1 project. Format is as required by the
+# stackhpc.os-networks role.
+nesi_akl1_routers: []
+
+# List of security groups in the nesi_akl1 demo project. Format is as required by the
+# stackhpc.os-networks role.
+nesi_akl1_security_groups: []
+
+###############################################################################
+# Configuration of nova flavors for NeSI OpenStack akl-1 region.
+
+# List of nova flavors in the nesi_akl1 project. Format is as required by the
+# stackhpc.os-flavors role.
+nesi_akl1_flavors: []
+
+###############################################################################
+# Configuration of glance images for NeSI OpenStack akl-1 region.
+
+# List of glance images in the nesi_akl1 project. Format is as required by the
+# stackhpc.os-images role.
+nesi_akl1_images: []
+
+# List of additional diskimage-builder elements to incorporate on the path
+nesi_akl1_image_elements: []
+
+# List of diskimage-builder element git repos to pull
+nesi_akl1_image_git_elements: []
+
+###############################################################################
+# Configuration of nova host aggregates for NeSI OpenStack akl-1 region.
+
+# List of host aggregates in the nesi_akl1 project.
+# Format is as required by the stackhpc.os-host-aggregates role.
+nesi_akl1_host_aggregates: []
+
+###############################################################################
+# Configuration of container clusters templates for NeSI OpenStack akl-1 region.
+
+# List of clusters templates in the nesi_akl1 project. Format is as required by the
+# stackhpc.os-container-clusters role.
+nesi_akl1_container_clusters_templates: []

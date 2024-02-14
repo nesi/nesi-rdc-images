@@ -1,0 +1,16 @@
+---
+- name: Generate NeSI OpenStack akl-1 region software images
+  hosts: localhost
+  tags:
+    - images
+  roles:
+    - role: stackhpc.os-images
+      os_images_venv: "{{ nesi_akl1_venv }}"
+      #os_images_cache: "{{ ansible_env.PWD }}/nesi_akl1-config-image-cache"
+      os_images_cache: "/data/stack-cache/nesi_akl1-config-image-cache"
+      os_images_auth_type: "{{ openstack_auth_type }}"
+      os_images_auth: "{{ openstack_auth }}"
+      os_images_cacert: "{{ openstack_cacert }}"
+      os_images_list: "{{ nesi_akl1_images }}"
+      os_images_elements: "{{ nesi_akl1_image_elements }}"
+      os_images_git_elements: "{{ nesi_akl1_image_git_elements }}"

@@ -1,0 +1,1198 @@
+---
+##################################################################################
+# Configuration of OpenStack user environment for NeSI OpenStack akl-1 region.
+
+# Path to create virtualenv in which to install python dependencies.
+nesi_akl1_venv: "{{ ansible_env.HOME }}/nesi_akl1-config-venv"
+
+###############################################################################
+# Software images for nesi_akl1
+
+os_images_elements: [ "{{ playbook_dir }}/image-elements" ]
+
+os_images_common: ""
+os_images_force_rebuild: True
+os_images_promote: True
+os_images_name_suffix: -rc
+os_images_hide: True
+
+#os_images_elements: ["/root/nesi-config/nesi_akl1-config/elements"]
+
+nesi_akl1_images:
+    - "{{ nesi_akl1_image_nesi_centos_stream_8 }}"
+    - "{{ nesi_akl1_image_nesi_centos_stream_9 }}"
+    #- "{{ nesi_akl1_image_nesi_rocky_88 }}"
+    #- "{{ nesi_akl1_image_rockylinux_88_cloud_dib }}"
+    #- "{{ nesi_akl1_image_nesi_rocky_8 }}" #notworking
+    - "{{ nesi_akl1_image_nesi_rocky_89 }}"
+    - "{{ nesi_akl1_image_nesi_rocky_93 }}"
+    - "{{ nesi_akl1_image_nesi_ubuntu_focal }}"
+    - "{{ nesi_akl1_image_nesi_ubuntu_jammy }}"
+    - "{{ nesi_akl1_image_nesi_ubuntu_lunar }}"
+    #- "{{ nesi_akl1_image_rockylinux_86_dib }}"
+    #  - "{{ nesi_akl1_image_rockylinux_86_ofed_57_dib }}"
+    #  - "{{ nesi_akl1_image_rockylinux_87_dib }}"
+    #  - "{{ nesi_akl1_image_rockylinux_87_ofed_58_dib }}"
+    # - "{{ nesi_akl1_image_rockylinux_87_ofed_58_dev_dib }}"
+    #  - "{{ nesi_akl1_image_fedora_coreos_35 }}"
+    #  - "{{ nesi_akl1_image_ubuntu_focal }}"
+    #  - "{{ nesi_akl1_image_ubuntu_focal_kvm }}"
+    #  - "{{ nesi_akl1_image_ubuntu_jammy }}"
+    #  - "{{ nesi_akl1_image_ubuntu_jammy_kvm }}"
+    ## NOTE_BY_KARL: removed because definition looks dirty (see below)
+    ##  - "{{ nesi_akl1_image_centos_stream_8_baremetal }}"
+    ##  - "{{ nesi_akl1_image_ubuntu_focal_baremetal }}"
+
+# CentOS image
+#nesi_akl1_image_centos_stream_8:
+#  name: "CentOS-Stream-8"
+#  type: "qcow2"
+#  image_url: "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2"
+#  properties:
+#    os_distro: "centos"
+#    os_version: "8-stream"
+
+
+# Nesi Rocky 8.9
+nesi_akl1_image_nesi_rocky_89:
+  name: "NeSI-FlexiHPC-Rocky-8.9_cloud-rc"
+  type: "raw"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.9"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.9"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.9"
+    hw_scsi_model: "virtio-scsi"
+
+# Nesi Rocky 9.3
+nesi_akl1_image_nesi_rocky_93:
+  name: "NeSI-FlexiHPC-Rocky-9.3_cloud-rc"
+  type: "raw"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-9.3"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "9.3"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "9.3"
+    hw_scsi_model: "virtio-scsi"
+
+# Nesi Ubuntu Focal 20.04 
+nesi_akl1_image_nesi_ubuntu_focal:
+  name: "NeSI-FlexiHPC-Ubuntu-Focal_20.04-rc"
+  type: "raw"
+  elements:
+    - "ubuntu"
+    - "ubuntu-common"
+    - "dkms"
+    - "dpkg"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "dracut-regenerate"
+    - "set-timezone"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/centos"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "focal"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "ubuntu"
+    os_version: "focal"
+    hw_scsi_model: "virtio-scsi"
+
+# Nesi Ubuntu Jammy 22.04 
+nesi_akl1_image_nesi_ubuntu_jammy:
+  name: "NeSI-FlexiHPC-Ubuntu-Jammy_22.04-rc"
+  type: "raw"
+  elements:
+    - "ubuntu"
+    - "ubuntu-common"
+    - "dkms"
+    - "dpkg"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "dracut-regenerate"
+    - "set-timezone"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/centos"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "jammy"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "ubuntu"
+    os_version: "jammy"
+    hw_scsi_model: "virtio-scsi"
+
+# Nesi Ubuntu Lunar 23.04 
+nesi_akl1_image_nesi_ubuntu_lunar:
+  name: "NeSI-FlexiHPC-Ubuntu-Lunar_23.04-rc"
+  type: "raw"
+  elements:
+    - "ubuntu"
+    - "ubuntu-common"
+    - "dkms"
+    - "dpkg"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "block-device-efi"
+    - "dracut-regenerate"
+    - "set-timezone"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/centos"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "lunar"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "ubuntu"
+    os_version: "lunar"
+    hw_scsi_model: "virtio-scsi"
+
+# Nesi Centos Stream 8
+nesi_akl1_image_nesi_centos_stream_8:
+  name: "NeSI-FlexiHPC-CentOS_Stream-8-rc"
+  type: "raw"
+  elements:
+    - "centos"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "block-device-efi"
+    - "dracut-regenerate"
+    - "set-timezone"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/centos"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8-stream"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "centos"
+    os_version: "8-stream"
+    hw_scsi_model: "virtio-scsi"
+
+# Nesi Centos 9
+nesi_akl1_image_nesi_centos_stream_9:
+  name: "NeSI-FlexiHPC-CentOS_Stream-9-rc"
+  type: "raw"
+  elements:
+    - "centos"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/centos"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "9"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "centos"
+    os_version: "9"
+    hw_scsi_model: "virtio-scsi"
+
+#NeSI Rocky 8.8 cloud image
+nesi_akl1_image_rockylinux_88_cloud_dib:
+  name: "NeSI-FlexiHPC-Rocky-8.8_cloud"
+  type: "qcow2"
+  image_url: "https://dl.rockylinux.org/pub/rocky/8.8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.8"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.8"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+
+# Nesi Rocky 8.8
+nesi_akl1_image_nesi_rocky_88:
+  name: "NeSI-FlexiHPC-Rocky-8.8"
+  type: "raw"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "logrotate"
+    - "fail2ban"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.8"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.8"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.7"
+    hw_scsi_model: "virtio-scsi"
+
+# Rocky built from DIB
+nesi_akl1_image_rockylinux_86_dib:
+  name: "RockyLinux-8.6"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.6"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.6"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.6"
+    hw_scsi_model: "virtio-scsi"
+
+## StackHPC-Built Slurm images
+# Rocky built from DIB
+nesi_akl1_image_rockylinux_86_dib:
+  name: "RockyLinux-8.6"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.6"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.6"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.6"
+    hw_scsi_model: "virtio-scsi"
+
+# Rocky built from DIB with Mellanox OFED 5.7
+nesi_akl1_image_rockylinux_86_ofed_57_dib:
+  name: "RockyLinux-8.6-OFED-5.7"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.6-ofed-5.7"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.6"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.6"
+    hw_scsi_model: "virtio-scsi"
+# Rocky built from DIB with Mellanox OFED 5.7
+nesi_akl1_image_rockylinux_86_ofed_57_dib:
+  name: "RockyLinux-8.6-OFED-5.7"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.6-ofed-5.7"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.6"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.6"
+    hw_scsi_model: "virtio-scsi"
+# Rocky built from DIB with Mellanox OFED 5.7
+nesi_akl1_image_rockylinux_86_ofed_57_dib:
+  name: "RockyLinux-8.6-OFED-5.7"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.6-ofed-5.7"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.6"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.6"
+    hw_scsi_model: "virtio-scsi"
+
+# Rocky built from DIB
+nesi_akl1_image_rockylinux_87_dib:
+  name: "RockyLinux-8.7"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.7"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.7"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.7"
+    hw_scsi_model: "virtio-scsi"
+
+# Rocky built from DIB with Mellanox OFED 5.8
+nesi_akl1_image_rockylinux_87_ofed_58_dib:
+  name: "RockyLinux-8.7-OFED-5.8"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.7-ofed-5.8"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.7"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.7"
+    hw_scsi_model: "virtio-scsi"
+
+
+
+# Rocky built from DIB with Mellanox OFED 5.8
+nesi_akl1_image_rockylinux_87_ofed_58_dib:
+  name: "RockyLinux-8.7-OFED-5.8"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.7"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.7"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.7"
+    hw_scsi_model: "virtio-scsi"
+
+# Rocky built from DIB with Mellanox OFED 5.8 and DEVUSER set for debugging in development
+nesi_akl1_image_rockylinux_87_ofed_58_dev_dib:
+  name: "RockyLinux-8.7-OFED-5.8-dev"
+  type: "qcow2"
+  elements:
+    - "rocky-container"
+    - "cloud-init"
+    - "cloud-init-growpart"
+    - "cloud-init-datasources"
+    - "epel"
+    - "selinux-permissive"
+    - "dhcp-all-interfaces"
+    - "vm"
+    - "grub2"
+    - "openssh-server"
+    - "block-device-efi"
+    - "dracut-regenerate"
+    - "devuser"
+  is_public: True
+  packages:
+    - "gdisk"
+    - "efibootmgr"
+    - "efivar"
+    - "bash-completion"
+    - "git"
+    - "linux-firmware"
+    - "logrotate"
+    - "lshw"
+    - "man-db"
+    - "net-tools"
+    - "nmon"
+    - "pciutils"
+    - "tmux"
+    - "vim-enhanced"
+    - "NetworkManager-initscripts-updown"
+    - "dracut"
+    - "dracut-network"
+  env:
+    DIB_BOOTLOADER_DEFAULT_CMDLINE: "nofb nomodeset gfxpayload=text rd.auto"
+    DIB_CONTAINERFILE_NETWORK_DRIVER: host
+    DIB_CONTAINERFILE_RUNTIME: podman
+    DIB_CONTAINERFILE_DOCKERFILE: "{{ playbook_dir }}/../containerfiles/rocky-8.7-ofed-5.8"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+    DIB_CLOUD_INIT_GROWPART_DEVICES:
+      - /
+    YUM: dnf
+    DIB_RELEASE: "8.7"
+    DIB_DRACUT_ENABLED_MODULES:
+      - name: lvm
+        packages:
+          - lvm2
+      - name: kernel-modules
+      - name: kernel-network-modules
+    DIB_DEV_USER_USERNAME: "slurm"
+    DIB_DEV_USER_PASSWORD: "duckbill-eggshell-voucher"
+    DIB_DEV_USER_PWDLESS_SUDO: "yes"
+  # DIB_DEBUG_TRACE: 1
+  properties:
+    os_type: "linux"
+    os_distro: "rocky"
+    os_version: "8.7"
+    hw_scsi_model: "virtio-scsi"
+
+
+
+
+# Latest stable Fedora Coreos 32 for Magnum
+nesi_akl1_image_fedora_coreos_35:
+  name: "FedoraCoreOS35"
+  type: "qcow2"
+  properties:
+    os_distro: "fedora-coreos"
+    os_version: "35"
+
+nesi_akl1_image_ubuntu_focal:
+  name: "Ubuntu20.04"
+  type: "qcow2"
+  image_url: "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
+  is_public: True
+
+nesi_akl1_image_ubuntu_focal_kvm:
+  name: "Ubuntu20.04 (KVM)"
+  type: "qcow2"
+  image_url: "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img"
+  is_public: False
+
+nesi_akl1_image_ubuntu_jammy:
+  name: "Ubuntu22.04"
+  type: "qcow2"
+  image_url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  is_public: True
+
+nesi_akl1_image_ubuntu_jammy_kvm:
+  name: "Ubuntu22.04 (KVM)"
+  type: "qcow2"
+  image_url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img"
+  is_public: False
+
+  #nesi_akl1_image_centos_stream_8_baremetal:
+  #  name: "CentOS-stream8-baremetal"
+  #  type: "qcow2"
+  #  elements:
+  #    - "centos"
+  #    - "cloud-init"
+  #    - "vm"
+  #    - "grub2"
+  #    - "enable-serial-console"
+  #    - "block-device-efi"
+  #  packages:
+  #    - gdisk
+  #    - efibootmgr
+  #    - efivar
+  #  env:
+  #    DIB_RELEASE: "8-stream"
+  # NOTE_BY_KARL: this looks dirty and it's why I removed this section
+  #    DIB_LOCAL_IMAGE: /data/CentOS-Stream-GenericCloud-8-20220125.1.x86_64.qcow2
+  #  properties:
+  #    os_type: "linux"
+  #    os_distro: "centos"
+  #    os_version: "8-stream"
+  # NOTE: This isn't known until the image has been built.
+  #    rootfs_uuid: "b92ea5c7-ece5-4228-9ed6-d8e727e561d5"
+
+nesi_akl1_image_ubuntu_focal_baremetal:
+  name: "Ubuntu-Focal-20.04-baremetal"
+  type: raw
+  elements:
+    - "ubuntu-minimal"
+    - "cloud-init"
+    - "cloud-init-datasources"
+    - "lvm"
+    - "openssh-server"
+    - "vm"
+    - "grub2"
+    - "enable-serial-console"
+    - "block-device-efi"
+  packages:
+    - net-tools
+    - iputils-ping
+    - mdadm
+  env:
+    DIB_RELEASE: "focal"
+    DIB_CLOUD_INIT_DATASOURCES: "ConfigDrive"
+  properties:
+    os_type: "linux"
+    os_distro: "ubuntu"
+    os_version: "focal"
+    # NOTE: This isn't known until the image has been built.
+    rootfs_uuid: "dc180743-7cfe-4a12-9d94-c470dc891a83"

@@ -1,0 +1,5 @@
+tee --append /etc/cloud/cloud.cfg <<EOF
+
+timezone: Pacific/Auckland
+
+EOF

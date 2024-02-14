@@ -1,5 +1,5 @@
 =============================================
-NeSI OpenStack akl-1 region Configuration
+NeSI OpenStack akl-1 region Images
 =============================================
 
 This project contains Ansible playbooks and configuration of Images on

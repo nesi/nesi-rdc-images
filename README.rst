@@ -2,15 +2,9 @@
 NeSI OpenStack akl-1 region Configuration
 =============================================
 
-This project contains Ansible playbooks and configuration of infrastructure on
+This project contains Ansible playbooks and configuration of Images on
 an existing OpenStack cloud for the NeSI OpenStack akl-1 region
-system.  This includes:
-
-* A demo project and user accounts in OpenStack keystone.
-* Compute node flavors in OpenStack nova for the various compute and storage
-  node types.
-* Networks, subnets and routers in OpenStack neutron for the external and
-  internal networks.
+system.
 
 Preparation
 ===========
@@ -56,35 +50,8 @@ was already configured, you can use the following command:
 
    $ source ${KOLLA_CONFIG_PATH}/public-openrc.sh
 
-If any Ansible variable is encrypted with Ansible Vault, make sure the
-``ANSIBLE_VAULT_PASSWORD_FILE`` environment variable is set:
+To build the OpenStack Images:
 
 .. code-block::
 
-   $ export ANSIBLE_VAULT_PASSWORD_FILE=<path-to-vault-password-file>
-
-To configure OpenStack infrastructure:
-
-.. code-block::
-
-   $ tools/nesi_akl1-config
-
-To run a specific playbook:
-
-.. code-block::
-
-   $ tools/nesi_akl1-config -p </path/to/playbook>
-
-To specify additional arguments to ``ansible-playbook``, separate them with a
-double hyphen (``--``):
-
-.. code-block::
-
-   $ tools/nesi_akl1-config -- <arguments>
-
-For example, a vault secret stored as a file can be passed as an extra
-configuration parameter:
-
-.. code-block::
-
-   $ tools/nesi_akl1-config -- --vault-password-file config-secret.vault 
+   $ tools/nesi_akl1-images.sh --images

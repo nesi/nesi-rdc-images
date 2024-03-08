@@ -1,0 +1,84 @@
+# rocky.repo
+#
+# The mirrorlist system uses the connecting IP address of the client and the
+# update status of each mirror to pick current mirrors that are geographically
+# close to the client.  You should use this for Rocky updates unless you are
+# manually picking other mirrors.
+#
+# If the mirrorlist does not work for you, you can try the commented out
+# baseurl line instead.
+
+[baseos]
+name=Rocky Linux 9.2 - BaseOS
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/BaseOS/x86_64/os/
+gpgcheck=1
+enabled=1
+countme=1
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[baseos-debug]
+name=Rocky Linux 9.2 - BaseOS - Debug
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/BaseOS/x86_64/debug/tree/
+gpgcheck=1
+enabled=0
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[baseos-source]
+name=Rocky Linux 9.2 - BaseOS - Source
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/BaseOS/source/tree/
+gpgcheck=1
+enabled=0
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[appstream]
+name=Rocky Linux 9.2 - AppStream
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/AppStream/x86_64/os/
+gpgcheck=1
+enabled=1
+countme=1
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[appstream-debug]
+name=Rocky Linux $releasever - AppStream - Debug
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/AppStream/x86_64/debug/tree/
+gpgcheck=1
+enabled=0
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[appstream-source]
+name=Rocky Linux 9.2 - AppStream - Source
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/AppStream/source/tree/
+gpgcheck=1
+enabled=0
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[crb]
+name=Rocky Linux 9.2 - CRB
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/CRB/x86_64/os/
+gpgcheck=1
+enabled=0
+countme=1
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[crb-debug]
+name=Rocky Linux 9.2 - CRB - Debug
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/CRB/x86_64/debug/tree/
+gpgcheck=1
+enabled=0
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+[crb-source]
+name=Rocky Linux 9.2 - CRB - Source
+baseurl=https://dl.rockylinux.org/vault/rocky/9.2/CRB/source/tree/
+gpgcheck=1
+enabled=0
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9

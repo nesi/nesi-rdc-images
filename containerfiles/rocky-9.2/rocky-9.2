@@ -5,6 +5,8 @@ FROM docker.io/rockylinux/rockylinux:9.2
 # final image.
 #RUN systemd-machine-id-setup
 
+COPY rocky-9.2/rocky.repo /etc/yum.repos.d/
+
 # Install/remove packages from https://git.rockylinux.org/rocky/kickstarts/-/blob/r8/Rocky-8-GenericCloud.ks
 RUN dnf install -y @core --allowerasing
 RUN dnf install -y chrony dnf yum cloud-init cloud-utils-growpart NetworkManager \
